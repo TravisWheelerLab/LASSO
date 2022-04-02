@@ -58,9 +58,11 @@ void get_results(
           //    Count and print all combinations with (first index < array[combin_len]) as results.
           //    This avoid counting combinations more than once.
           if (set->combination[0] >= array[combin_len]) { // As mentioned above, check if the combination is valid
+            for (int i=0; i<combin_len+1; ++i)
+              printf("%f ", input_set[array[i]]);
             for (int i=0; i<set->combination_len; ++i)
-            printf("%f ", input_set[set->combination[i]]);
-          printf("\n");
+              printf("%f ", input_set[set->combination[i]]);
+            printf("\n");
             ++(*num_results);
             set = set->next;
           } else break; // if the combination is not valid, exit the loop
@@ -326,7 +328,7 @@ void queryZeroBoard(
       for (int j=i; j<n; ++j)
         if (input_set[i]+input_set[j]==query_val) {
           resultsCounter++;
-          if (print_details) printf("%f %f\n",input_set[i],input_set[j]);
+          if (print_comb) printf("%f %f\n",input_set[i],input_set[j]);
         }
     // end doubly nested for loop
     if (print_details) printf("\t2\t\t%lu\n", resultsCounter);
