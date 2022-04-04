@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "unboundedSubsetSum.h"
+#include "ussp/unboundedSubsetSum.h"
 
 int main() {
 
