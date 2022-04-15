@@ -1,5 +1,5 @@
 # Unbounded Subset Sum
-With this algorithm I present a solution to the Unbounded Subset Sum Problem (USSP). The algorithm makes use of repeating commbinatorial patterns to leverage repetition in reducing the runtime that is required to retrieve all possible combinations summing to a query/target value. 
+With this algorithm I present a solution to the Unbounded Subset Sum Problem (USSP). The algorithm makes use of repeating commbinatorial patterns to leverage repetition in reducing the runtime that is required to retrieve all possible combinations summing to a query/target value. For application of this algorithm to a real-world problem in analytical chemistry, [see this repository](https://github.com/koos-burgoyne/mass-decomposition). Publications resulting from these works are forthcoming.
 
 ## Algorithm Synopsis
 The algorithm operates in two parts:
@@ -7,31 +7,24 @@ The algorithm operates in two parts:
 * The second part uses a branch and bound technique to query that generalizable solution space for combinations summing to the query/target value.
 
 ## Boost
-Note that this algorithm relies on the Boost::unordered_map header to operate. In some Linux-based operating systems, Boost comes with the installation, e.g. `/usr/include/boost`. The Gnu compiler will typically find the Boost library in Linux but if you are using Windows, you might need to consider using the `-I <boost source directory>` flag when compiling with the Gnu compiler.  
+Note that this algorithm relies on the Boost::unordered_map header to operate. In some Linux-based operating systems, Boost comes with the installation, e.g. `/usr/include/boost`. The Gnu compiler will typically find the Boost library in a Unix type operating system but if you are using Windows, you might need to use the `-I <boost source directory>` flag when compiling with the Gnu compiler.  
+  
 If your operating system does not come with Boost, you can use it by simply [downloading](https://www.boost.org/users/download/) Boost and unzipping the archive to the desired directory.
 
 ## Build
 This algorithm was originally written in C but makes use of the Boost hash table library so it is compiled in C++.  
-You can build from the source code using CMake and the CMakeLists.txt file included in this repository. In a Linux operating system, the following steps can be applied from the root directory of this repository:
+You can build from the source code using CMake and the CMakeLists.txt file included in this repository. In a Unix type operating system, the following steps can be applied from the root directory of this repository:
 ```
-mkdir build
-```
-```
-cd build
+cmake .
 ```
 ```
-cmake ..
-```
-```
-cmake --build .
-```
-```
-./unbounded_subset_sum.exe
+./build/uss
 ```
 
 ## Run
 This algorithm does not take command line arguments. As such, you can simply run the algorithm using the format provided in the example `main.cpp`.  
-If running in Visual Studio Code in Windows, you can use the .vscode directory stored in this repository to run the algorithm in debugging mode. Note that this algorithm uses the Boost library so you will need to specify the location of you boost source files.
+  
+If running in Visual Studio Code in Windows, you can use the .vscode directory stored in this repository to run the algorithm in debugging mode as written up in the example. Note that this algorithm uses the Boost library so you will need to have a Boost installation for the CMake builder to find.
 
 ## Usage
 When using the algorithm in your own project, import the main header file, e.g. `#include "<source directory>/unboundedSubsetSum.h"`, and then call the `unboundedSubsetSum()` function with the following parameters:
