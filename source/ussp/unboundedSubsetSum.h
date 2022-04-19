@@ -52,16 +52,16 @@ void unboundedSubsetSum(
   int     search_space_comb_len = 0,    // Combination length of the search space
           search_space_min      = 3,    // Minimum combination length of search space 
           search_space_max      = 7,    // User setting for the maximum search space combination length; if 0, then automated (a reasonable max is dependent on the size of the input input_set and number of queries to be performed)
-          dp_precision          = 5,    // Total number of decimal places precision
           combination_length    = 0;    // If specified, algorithm searches that combination length only; if 0, all combination lengths are searched
+  double  dp_precision          = 0.0;  // Order of magnitude of epsilon - determines width of bins in zeroboard hash-table
   
   // Error check input values, sort input input_set, and remove duplicates
-  process_inputs(input_set, input_set_size, query_value, &search_space_comb_len, search_space_min, search_space_max, dp_precision, combination_length, epsilon, print_details);
+  process_inputs(input_set, input_set_size, query_value, epsilon, &dp_precision, &search_space_comb_len, search_space_min, search_space_max, dp_precision, combination_length, print_details);
   
   // create the zeroboard
   start              = clock();
     Board zeroboard;
-    writeZeroBoard(input_set, &zeroboard, input_set_size, search_space_comb_len);
+    writeZeroBoard(input_set, &zeroboard, input_set_size, search_space_comb_len, epsilon, dp_precision);
   finish             = clock();
   time_used_write    = ((double) (finish - start)) / CLOCKS_PER_SEC;
   total_time_used   += time_used_write;
@@ -71,7 +71,7 @@ void unboundedSubsetSum(
 
   // query the zeroboard
   start         = clock();
-    queryZeroBoard(input_set, input_set_size, &zeroboard, search_space_comb_len, search_space_min, dp_precision, query_value, combination_length, epsilon, print_details, print_comb);
+    queryZeroBoard(input_set, input_set_size, &zeroboard, search_space_comb_len, search_space_min, dp_precision, query_value, epsilon, combination_length, print_details, print_comb);
   finish        = clock();
   time_used_query = ((double) (finish - start)) / CLOCKS_PER_SEC;
   total_time_used   += time_used_query;

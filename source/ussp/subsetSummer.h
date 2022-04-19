@@ -8,98 +8,6 @@
 
 #include "zeroboard.h"
 
-/**
- * @brief A function to directly query the zeroboard hash-table for combinations summing to a target value. If reuired, prints all combinations summing to target
- * 
- * @param input_set The input dataset
- * @param zeroboard The zeroboard to query for combinations summing to the tare_value
- * @param tare_value Rectified value to query for existence of in the zeroboard
- * @param num_results The counter maintaining the number of combinations summing to the target query value
- * @param array The array maintaining the combination being tracked in query_zeroboard()
- * @param array_size Size of the array maintaining the combination in query_zeroboard()
- * @param combin_len Length of combination to include from the 'array'
- * @param print_comb Require printing of all combinations summing to target value
- */
-void get_results(
-  double* input_set,
-  Board* zeroboard,
-  double tare_value,
-  unsigned long* num_results,
-  int* array,
-  int array_size,
-  int combin_len,
-  int print_comb )
-{
-  
-  if (print_comb) {
-    // Using count has the same runtime complexity as the contains function from the C++20 std, except that count is included in C++11
-    // Runtime complexity is constant on average with worst case being linear in the size of the container
-    if (zeroboard->count(tare_value) != 0) {
-      
-      if (combin_len == -1) { // this means that the 'array' indexes should not be included
-        // Iterate over all combinations summing to tare_value.
-        combination_set* set = (*zeroboard)[tare_value];
-        while (set != NULL) {
-          // Print the combination to the terminal
-          for (int i=0; i<set->combination_len; ++i)
-            printf("%f ", input_set[set->combination[i]]);
-          printf("\n");
-          // increment counter of number of combinations summing to the target query value
-          ++(*num_results);
-          // Move to the next combination set
-          set = set->next;
-        }
-
-      } else { // else if (combin_len !- -1) which means that we are above the combination length of the zeroboard, so we need to include the 'array' indexes 
-        
-        combination_set* set = (*zeroboard)[tare_value];
-        while (set != NULL) {
-          // Check if the combination is valid by comparing its first value to the last included value of the 'array' combination:
-          //    Count and print all combinations with (first index < array[combin_len]) as results.
-          //    This avoid counting combinations more than once.
-          if (set->combination[0] >= array[combin_len]) { // As mentioned above, check if the combination is valid
-            for (int i=0; i<combin_len+1; ++i)
-              printf("%f ", input_set[array[i]]);
-            for (int i=0; i<set->combination_len; ++i)
-              printf("%f ", input_set[set->combination[i]]);
-            printf("\n");
-            ++(*num_results);
-            set = set->next;
-          } else break; // if the combination is not valid, exit the loop
-        }
-
-      } // end if else block (combin_len == -1)
-
-    } // end if (zeroboard->count(tare_value) != 0)
-
-  // else if printing results is not required, repeat the above block without printing all combinations to the terminal
-  } else {
-    if (zeroboard->count(tare_value) != 0) {
-      
-      if (combin_len == -1) {
-        combination_set* set = (*zeroboard)[tare_value];
-        while (set != NULL) {
-          ++(*num_results);
-          set = set->next;
-        }
-
-      } else { // else if (combin_len !- -1) 
-        combination_set* set = (*zeroboard)[tare_value];
-        while (set != NULL) {
-          if (set->combination[0] >= array[combin_len]) { // Check if the combination is valid
-            ++(*num_results);
-            set = set->next;
-          } else break; // if the combination is not valid, exit the loop
-        }
-
-      } // end if else block (combin_len == -1)
-
-    } // end if (zeroboard->count(tare_value) != 0)
-
-  } // end if else printing results is/is-not required
-
-}
-
 
 /**
  * @brief A function to methodically query the zeroboard hash-table using a method that excludes significant portions of the search space 
@@ -111,8 +19,8 @@ void get_results(
  * @param search_space_min The user-defined minimum combination length to be searched
  * @param dp The number of decimal places precision for the target query value
  * @param query_val The target query value
- * @param combination_length The user-defined value that determines a specific combination length to search; 0 by default searches all lengths
  * @param epsilon The amount by which the target query value can vary
+ * @param combination_length The user-defined value that determines a specific combination length to search; 0 by default searches all lengths
  * @param print_details Reuirement to print details about the algorithm run
  * @param print_comb Requirement to print all combinations summing to the target value
  */
@@ -124,8 +32,8 @@ void queryZeroBoard(
   int search_space_min,
   int dp,
   double query_val,
-  int combination_length,
   double epsilon,
+  int combination_length,
   int print_details,
   int print_comb )
 {
@@ -235,7 +143,7 @@ void queryZeroBoard(
               tare_value = (tare_value + (comb_max - query_val));
               
               // Check the zeroboard using calculated tare mass
-              get_results(input_set, zeroboard, tare_value, &resultsCounter, &array[0], array_size, curr_comb_len-search_space_comb_len-1, print_comb);
+              get_combinations(input_set, zeroboard, tare_value, &resultsCounter, &array[0], array_size, curr_comb_len-search_space_comb_len-1, print_comb);
             
             } // end if, ie. if its not equal, move on to the next combination
 
@@ -267,7 +175,7 @@ void queryZeroBoard(
             }
             tare_value += (comb_max - query_val);
 
-            get_results(input_set, zeroboard, tare_value, &resultsCounter, &array[0], array_size, curr_comb_len-search_space_comb_len-1, print_comb);
+            get_combinations(input_set, zeroboard, tare_value, &resultsCounter, &array[0], array_size, curr_comb_len-search_space_comb_len-1, print_comb);
             
             ++array[dim];
             mins[dim] = mins[dim] + (input_set[array[dim]]-input_set[array[dim]-1])*(search_space_comb_len+1);
@@ -314,7 +222,7 @@ void queryZeroBoard(
     // Calculate tare_value
     tare_value = (curr_comb_len*input_set[n_zeroBased] - query_val);
     // Check if there are combinations summing to the target
-    get_results(input_set, zeroboard, tare_value, &resultsCounter, &array[0], array_size, curr_comb_len-search_space_comb_len-1, print_comb);
+    get_combinations(input_set, zeroboard, tare_value, &resultsCounter, &array[0], array_size, curr_comb_len-search_space_comb_len-1, print_comb);
     // Print number of combinations summing to target if required
     if (print_details) printf("\t%d\t\t%lu\n", curr_comb_len, resultsCounter);
     // Add number of combinations summing to target for final combination length to the total count
@@ -347,12 +255,16 @@ void queryZeroBoard(
  * @param zeroboard The zeroboard to write combinations and sums into
  * @param n The number of items in the input set
  * @param search_space_comb_len The length of the generalized solution space contained in the zeroboard
+ * @param epsilon The amount by which the query value can vary
+ * @param dp The order or magnitude of epsilon; used for creating and querying zeroboard bins
  */
 void writeZeroBoard (
   double *input_set,
   Board* zeroboard,
   int n,
-  int search_space_comb_len )
+  int search_space_comb_len,
+  double epsilon,
+  double dp )
 {
 
   // Function Variables: 
@@ -412,7 +324,7 @@ void writeZeroBoard (
             }
             
             // Insert new tare value into zeroboard with associated combination set
-            board_insert(zeroboard, combination_sum, combination, comb_set_size);
+            board_insert(zeroboard, combination_sum, dp, combination, comb_set_size);
 
             // Increment counters
             ++rowCounter;
@@ -461,7 +373,7 @@ void writeZeroBoard (
         combination[comb_set_size-2] = colCounter;
         
         // Insert new combination sum into zeroboard with associated combination set
-        board_insert(zeroboard, combination_sum, combination, comb_set_size);
+        board_insert(zeroboard, combination_sum, dp, combination, comb_set_size);
 
         // Increment combination counters
         ++rowCounter;

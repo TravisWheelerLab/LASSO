@@ -51,12 +51,12 @@ void Sort(
  * @param input_set A pointer to the first item in an array of double type values
  * @param input_set_size The number of items in the input_set
  * @param query_value The target value to which combinations must sum
+ * @param epsilon The amount by which the query/target value can vary
  * @param search_space_comb_len Combination length of the search space
  * @param search_space_min Minimum combination length of search space 
  * @param search_space_max User setting for the maximum search space combination length; if 0, then automated (a reasonable max is dependent on the size of the input input_set and number of queries to be performed)
  * @param dp_precision Total number of decimal places precision
  * @param combin_len If specified, algorithm searches that combination length only; if 0, all combination lengths are searched
- * @param epsilon The value that the target value can vary by
  * @param print_details Require printing of details about the algorithm run
  * 
  * @throws Exits on failure. If print_details==0 no error is printed.
@@ -65,12 +65,13 @@ void process_inputs(
   double *input_set,
   int input_set_size,
   double query_value,
+  double epsilon,
+  double *dp,
   int *search_space_comb_len,
   int search_space_min,
   int search_space_max,
   int dp_precision,
   int combin_len,
-  double epsilon,
   int print_details)
 {
 
@@ -143,7 +144,7 @@ void process_inputs(
       if (input_set[i-1] > input_set[i])
         Sort(input_set, 0, input_set_size);
 
-    // PART 3: use sorted characteristic to remove duplicates in linear time
+  // PART 3: use sorted characteristic to remove duplicates in linear time
       bool duplicates = false;
       // A. check for duplicates
       for (int i=0; i<(input_set_size)-1; ++i) {
@@ -172,6 +173,18 @@ void process_inputs(
         input_set_size = counter;
       }
 
+  // PART 4: calculate the order of magnitude of epsilon IFF epsilon > 0
+  //         this value determines the numeric width of zeroboard (which is a hash-table) bins
+  if (epsilon) {
+    double val = 0.0;
+    (*dp) = 1.0;
+    while (val < 1.0) {
+      (*dp) *= 10.0;
+      val = epsilon * (*dp);
+      printf(" DP = %f | %f = %f = %f * %f\n", *dp, val, epsilon * (*dp), epsilon, (*dp));
+    }
+    (*dp) /= 10.0;
+  }
 } // end process_inputs()
 
 
