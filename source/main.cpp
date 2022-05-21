@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "ussp/unboundedSubsetSum.h"
+#include "lasso/unboundedSubsetSum.h"
 
 int main() {
 
