@@ -1,5 +1,5 @@
-# LASSO: Solving Unbounded Subset Sum
-With this algorithm I present a solution to the Unbounded Subset Sum Problem (USSP). The algorithm makes use of repeating commbinatorial patterns to leverage repetition in reducing the runtime that is required to retrieve all possible combinations summing to a query/target value. For application of this algorithm to a real-world problem in analytical chemistry, [see this repository](https://github.com/koos-burgoyne/mass-decomposition). Publications resulting from these works are forthcoming.
+# LASSO: Listing All Subset Sums Optionally  (for the Unbounded Subset Sum problem)
+With this algorithm, we present a solution to the Unbounded Subset Sum Problem (USSP). The algorithm makes use of repeating commbinatorial patterns to leverage repetition in reducing the runtime that is required to retrieve all possible combinations summing to a query/target value. Details of the algorithm can be found in [this thesis](https://scholarworks.umt.edu/cgi/viewcontent.cgi?article=13057&context=etd). For application of this algorithm to a real-world problem in analytical chemistry, [see this repository](https://github.com/koos-burgoyne/mass-decomposition). Publications resulting from these works are forthcoming.
 
 ## Algorithm Synopsis
 The algorithm operates in two parts:
